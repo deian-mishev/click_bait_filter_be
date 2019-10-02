@@ -23,9 +23,9 @@ app.post("/pageSegmentation", (req, res) => {
   // DATA LAYER
   if (req.body.page) {
     const page = extractHostname(req.body.page);
-    userLayer[req.body.action] = { [req.body.tabId]: page };
+    userLayer[req.body.token] = { [req.body.tabId]: page };
     data = dataLayer[page] || {};
-  } else if (userLayer[req.body.action]) {
+  } else if (userLayer[req.body.token]) {
     const user = userLayer[req.body.action];
     data = dataLayer[user[req.body.tabId]] || {};
   }
@@ -47,8 +47,6 @@ app.post("/link", (req, res) => {
 
 app.use(cors());
 app.listen(process.env.PORT);
-
-console.log(`Service listening on port ${process.env.PORT}`);
 
 extractHostname = url => {
   var hostname;
