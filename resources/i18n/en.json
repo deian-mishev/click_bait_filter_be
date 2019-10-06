@@ -1,0 +1,23 @@
+{
+    "welcome": "Welcome, {value}!",
+    "consulting_info": "Your consultant today is {name}. {gender, select, male{He} female{She} other{They are}} says: {says}",
+    "messages": "You have {count, plural, =0{no} one{one} other{{count}}} unread {count, plural, one{message} other{messages}}!",
+    "success": "Success",
+    "info": "Info",
+    "warning": "Warning",
+    "danger": "Danger",
+    "warn": "Warning",
+    "error": "Danger",
+    "locale_select": "Locale Select",
+    "accs-selector": "Accessibility Selector",
+    "heading_1": "My heading",
+    "p_1": "This is the first section of my document.",
+    "p_2": "I'll add another paragraph here too.",
+    "li_1": "Here is",
+    "li_2": "a list for",
+    "li_3": "you to read",
+    "heading_2": "My subheading",
+    "p_3": "This is the first subsection of my document. I'd love people to be able to find this content!",
+    "heading_3": "My 2nd subheading",
+    "p_4": "This is the second subsection of my content. I think is more interesting than the last one."
+}

@@ -1,0 +1,23 @@
+{
+    "welcome": "Bonjour, {value}!",
+    "consulting_info": "Votre conseillère aujourd'hui est {name}. {gender, select, male{Er} female{Sie} other{They are}} elle dit: {says}",
+    "messages": "{count, plural, =0{Vous avez aucun message non lu} one{Vous avez un message non lu} other{Vous avez {count} messages non lus}}!",
+    "success": "Succès",
+    "info": "Info",
+    "warning": "Attention",
+    "danger": "Danger",
+    "warn": "Attention",
+    "error": "Danger",
+    "locale_select": "Sélection locale",
+    "accs-selector": "Sélecteur d'accessibilité",
+    "heading_1": "Ma rubrique",
+    "p_1": "Ceci est la première partie de mon document.",
+    "p_2": "Je vais ajouter un autre paragraphe ici aussi.",
+    "li_1": "Voici",
+    "li_2": "une liste pour",
+    "li_3": "vous lire",
+    "heading_2": "Ma sous rubrique",
+    "p_3": "Ceci est la première sous-section de mon document. J'aimerais que les gens puissent trouver ce contenu!",
+    "heading_3": "Ma 2ème sous rubrique",
+    "p_4": "Ceci est la deuxième sous-section de mon contenu. Je pense est plus intéressant que le dernier."
+}
