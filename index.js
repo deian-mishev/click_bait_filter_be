@@ -1,64 +1,39 @@
-console.log("===========================");
-console.log("======= BUILD CHECK =======");
-console.log("===========================");
-console.log("==== SERVICE ENV VARS =====");
-console.log("PORT: " + process.env.PORT);
-console.log("===========================");
+const cors = require('cors');
+const express = require('express');
+const bodyParser = require('body-parser');
+const jwtAuthz = require('express-jwt-authz');
+const compression = require('compression');
 
-const cors = require("cors");
-const express = require("express");
-const bodyParser = require("body-parser");
+// CONSTANTS
+const {
+  PORT,
+  API_URL,
+  STATIC_SERVE,
+  HTML,
+  ENTRY
+} = require('./constants');
 
-const Websait = require('./mongo/websait');
-const User = require('./mongo/user');
-const Link = require('./mongo/link');
+// AUTHENTICATION
+const { checkIfAuthenticated, extendJWTSession } = require('./api/authentication');
+
+// ENDPOINTS
+const { fetchPageSegmentation, registerLink } = require('./api/endpoint');
 
 const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
+app.use(compression());
 app.use(bodyParser.json());
 
-app.post("/pageSegmentation", (req, res) => {
-  let data = {};
+// IN HERE API ROUTERS ARE FIRST
 
-  // DATA LAYER
-  if (req.body.page) {
-    const page = extractHostname(req.body.page);
-    userLayer[req.body.token] = { [req.body.tabId]: page };
-    data = dataLayer[page] || {};
-  } else if (userLayer[req.body.token]) {
-    const user = userLayer[req.body.action];
-    data = dataLayer[user[req.body.tabId]] || {};
-  }
+app.route(`${API_URL}/pageSegmentation`).post(extendJWTSession, jwtAuthz(['role:user', 'role:admin']), fetchPageSegmentation);
+app.route(`${API_URL}/click`).post(checkIfAuthenticated, jwtAuthz(['role:user']), registerLink);
 
-  res.send(data);
-});
+// Extending valid jwt sessions
+app.use(extendJWTSession);
 
-app.post("/link", (req, res) => {
-  const params = req.body;
-  const domain = extractHostname(params.domain);
+// WE ARE HANDLING ALL ROUTES WHICH DO NOT RESULT IN A REQUEST LAST AND RETURN THE SPA
+STATIC_SERVE && app.use(express.static(HTML));
+STATIC_SERVE && app.route('*').get((request, response) => { response.sendFile(ENTRY); });
 
-  // DATA LAYER
-  if (!dataLayer[domain]) dataLayer[domain] = { [params.link]: 0 };
-  if (!dataLayer[domain][params.link]) dataLayer[domain][params.link] = 0;
-
-  dataLayer[domain][params.link]++;
-  res.send(params);
-});
-
-app.use(cors());
-app.listen(process.env.PORT);
-
-extractHostname = url => {
-  var hostname;
-  if (url.indexOf("//") > -1) {
-    hostname = url.split("/")[2];
-  } else {
-    hostname = url.split("/")[0];
-  }
-  hostname = hostname.split(":")[0];
-  hostname = hostname.split("?")[0];
-  return hostname;
-};
-
-const dataLayer = {};
-const userLayer = {};
+app.listen(PORT, () => console.log('Port: ' + PORT));
