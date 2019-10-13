@@ -1,5 +1,4 @@
 const crypto = require('crypto');
-const jwt = require('jsonwebtoken');
 
 const extractHostname = url => {
     var hostname;
@@ -12,20 +11,6 @@ const extractHostname = url => {
     hostname = hostname.split("?")[0];
     return hostname;
 };
-
-const getUser = (req, userLayer) => {
-    const token = req.headers.authorization.replace('Bearer ', '');
-    const payload = jwt.decode(token);
-
-    // DATA LAYER
-    return userLayer.find(x => {
-        if (x.name === payload.name) {
-            const { passwordHash, salt } = x.passwordData;
-            return passwordHash === getHash(x.name, salt);
-        }
-        return false;
-    });
-}
 
 const getHash = (password, salt) => {
     const hash = crypto.createHmac('sha512', salt);
@@ -55,6 +40,5 @@ const saltHashPassword = (userpassword) => {
 module.exports = {
     extractHostname,
     saltHashPassword,
-    getHash,
-    getUser
+    getHash
 }

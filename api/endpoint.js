@@ -1,15 +1,13 @@
-const fs = require('fs');
 const jwt = require('jsonwebtoken');
 
 const {
     TOKEN_EXPIRATION,
     RSA_PRIVATE_KEY,
-    JWT_ALGORITHM,
-    RESOURCES
+    JWT_ALGORITHM
 } = require('../constants');
 
-const { getHash, extractHostname, getUser } = require('./handlers');
-const { userLayer, dataLayer } = require('./../schema');
+const { getHash, extractHostname } = require('./handlers');
+const { getUser, getData, addData } = require('./../schema');
 
 const authenticate = (req, res) => {
     const { username, password } = req.body;
@@ -47,61 +45,82 @@ const authenticate = (req, res) => {
     });
 };
 
-const fetchPageSegmentation = (req, res) => {
+const fetchPageSegmentation = async (req, res) => {
     let data = {};
 
-    const user = getUser(req, userLayer);
+    const user = await getUser(req);
 
     if (user) {
         if (req.body.page) {
             const page = extractHostname(req.body.page);
-            user.tabs[req.body.tabId] = page;
-            data = dataLayer[page] || {};
+            if (!user.tabs.find(a => a.id === req.body.tabId)) {
+                user.tabs.push({
+                    id: req.body.tabId,
+                    page: page
+                });
+                user.save();
+            }
+
+            data = await getData(page) || {};
         } else {
-            data = dataLayer[user.tabs[req.body.tabId]] || {};
+            const tab = user.tabs.find(a => a.id === req.body.tabId);
+            if (tab) {
+                data = await getData(tab.page) || {}
+            }
         }
+    }
+
+    if (data.links) {
+        let temp = {};
+        data.links.forEach(element => {
+            temp[element.url] = element.count;
+        });
+        data = temp;
     }
 
     res.send(data);
 };
 
-const registerLink = (req, res) => {
+const registerLink = async (req, res) => {
     const params = req.body;
     const domain = extractHostname(params.domain);
 
-    const user = getUser(req, userLayer);
+    const user = await getUser(req);
 
-    // DATA LAYER
-    if (!user.clicks[params.link]) user.clicks[params.link] = 0;
-    if (!dataLayer[domain]) dataLayer[domain] = { [params.link]: 0 };
-    if (!dataLayer[domain][params.link]) dataLayer[domain][params.link] = 0;
+    if (user) {
+        let data = await getData(domain);
 
-    user.clicks[params.link]++;
-    dataLayer[domain][params.link]++;
+        if (!data) {
+            data = await addData(domain, params.link)
+        } else {
+            const link = data.links.find(a => a.url === params.link);
+            if (!link) {
+                data.links.push(
+                    {
+                        url: params.link
+                    }
+                );
+            } else {
+                link.count++;
+            }
+            data.save();
+        }
+        const click = user.clicks.find(a => a.url === params.link);
+        if (click) {
+            click.count++;
+        } else {
+            user.clicks.push({
+                url: params.link
+            })
+        }
+        user.save();
+    }
 
     res.send();
-};
-
-const translation = (req, res) => {
-    if (req.query && req.query.language) {
-        fs.readFile(`${RESOURCES}/i18n/${req.query.language}.json`, 'utf8', function (err, data) {
-            if (err) {
-                res.status(418);
-                res.send({ message: 'Inexisting Language' });
-                return;
-            }
-            res.send(data);
-            res.end(data);
-        });
-    } else {
-        res.status(418);
-        res.send({ message: 'No local data' });
-    }
 };
 
 module.exports = {
     registerLink,
     fetchPageSegmentation,
-    translation,
     authenticate
 }

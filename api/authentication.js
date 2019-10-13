@@ -1,7 +1,7 @@
 const expressJwt = require('express-jwt');
 const jwt = require('jsonwebtoken');
-const { saltHashPassword, getUser } = require('./handlers');
-const { userLayer } = require('./../schema');
+
+const { addUser, getUser } = require('./../schema');
 
 const {
     RSA_PRIVATE_KEY,
@@ -14,19 +14,19 @@ const checkIfAuthenticated = expressJwt({
     algorithms: [JWT_ALGORITHM]
 });
 
-const extendJWTSession = (req, res, next) => {
+const extendJWTSession = async (req, res, next) => {
     if (req.headers.authorization && req.headers.origin.indexOf('chrome-extension://') === 0) {
         const token = req.headers.authorization.replace('Bearer ', '');
-        const payload = jwt.decode(token);
+        let payload;
+        try {
+            payload = jwt.decode(token);
+        } catch (error) {
+            payload = false;
+        }
+
         // New User
         if (!payload) {
-            const passwordData = saltHashPassword(token);
-            userLayer.push({
-                name: token,
-                passwordData,
-                clicks: {},
-                tabs: {}
-            });
+            await addUser(token);
             const jwtBearerToken = jwt.sign({
                 name: token,
                 scope: [
@@ -46,7 +46,7 @@ const extendJWTSession = (req, res, next) => {
             res.header('Authorization', tokenString);
 
             req.headers.authorization = tokenString;
-        } else if (payload && !getUser(req, userLayer)) {
+        } else if (payload && !(await getUser(req))) {
             res.status(400).send('missing id');
             const error = new Error();
             error.httpStatusCode = 400
