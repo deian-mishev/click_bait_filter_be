@@ -105,14 +105,10 @@ const registerLink = async (req, res) => {
             }
             data.save();
         }
-        const click = user.clicks.find(a => a.url === params.link);
-        if (click) {
-            click.count++;
-        } else {
-            user.clicks.push({
-                url: params.link
-            })
-        }
+        user.clicks.push({
+            domain: domain,
+            url: params.link
+        })
         user.save();
     }
 

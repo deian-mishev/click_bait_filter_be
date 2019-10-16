@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 
 const extractHostname = url => {
-    var hostname;
+    let hostname;
     if (url.indexOf("//") > -1) {
         hostname = url.split("/")[2];
     } else {
