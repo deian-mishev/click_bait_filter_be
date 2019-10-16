@@ -5,7 +5,7 @@ const { saltHashPassword, getHash } = require('./api/handlers');
 
 mongoose.connect('mongodb://127.0.0.1/clickbait_filter', { useNewUrlParser: true },
     function () {
-        // mongoose.connection.db.dropDatabase();
+        mongoose.connection.db.dropDatabase();
     }
 );
 
@@ -22,20 +22,26 @@ const tabsSchema = new Schema({
     page: String
 });
 
-const clicksSchema = new Schema({
+const dataClicksSchema = new Schema({
     url: String,
     count: { type: Number, default: 1 }
 });
 
+const userClicksSchema = new Schema({
+    domain: String,
+    url: String,
+    time: { type: Date, default: Date.now }
+});
+
 const dataLayer = new Schema({
     domain: String,
-    links: [clicksSchema]
+    links: [dataClicksSchema]
 });
 
 const userLayer = new Schema({
     name: String,
     tabs: [tabsSchema],
-    clicks: [clicksSchema],
+    clicks: [userClicksSchema],
     passwordData: {
         passwordHash: String,
         salt: String
@@ -46,15 +52,30 @@ const userModel = mongoose.model('userModel', userLayer);
 const dataModel = mongoose.model('dataModel', dataLayer);
 
 const getUser = async (req) => {
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     const token = req.headers.authorization.replace('Bearer ', '');
     const payload = jwt.decode(token);
 
-    const user = await userModel.find({ name: payload.name }).then(function (users) {
+    const user = await userModel.find({ name: payload.name + ip }).then(function (users) {
         const tempUser = users.find(function (x) {
-            if (x.name === payload.name) {
-                const { passwordHash, salt } = x.passwordData;
-                return passwordHash === getHash(x.name, salt);
-            }
+            const { passwordHash, salt } = x.passwordData;
+            return passwordHash === getHash(x.name, salt);
+        });
+
+        return tempUser;
+    }).catch(function (error) {
+        console('one of the queries failed', error);
+    });
+    return user;
+}
+
+const getUserFromToken = async (req, token) => {
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+    const user = await userModel.find({ name: token + ip }).then(function (users) {
+        const tempUser = users.find(function (x) {
+            const { passwordHash, salt } = x.passwordData;
+            return passwordHash === getHash(x.name, salt);
         });
 
         return tempUser;
@@ -99,5 +120,6 @@ module.exports = {
     addUser,
     getUser,
     getData,
-    addData
+    addData,
+    getUserFromToken
 }
