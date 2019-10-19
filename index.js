@@ -1,4 +1,5 @@
-const cors = require('cors');
+require('dotenv').config();
+// const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
 const jwtAuthz = require('express-jwt-authz');
@@ -20,7 +21,7 @@ const { checkIfAuthenticated, extendJWTSession } = require('./api/authentication
 const { fetchPageSegmentation, registerLink } = require('./api/endpoint');
 
 const app = express();
-app.use(cors());
+// app.use(cors());
 app.use(compression());
 app.use(bodyParser.json());
 

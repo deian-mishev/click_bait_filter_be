@@ -3,9 +3,11 @@ const mongoose = require('mongoose');
 
 const { saltHashPassword, getHash } = require('./api/handlers');
 
-mongoose.connect('mongodb://127.0.0.1/clickbait_filter', { useNewUrlParser: true },
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/clickbait_filter', { useNewUrlParser: true },
     function () {
-        mongoose.connection.db.dropDatabase();
+        // if (mongoose.connection.db) {
+        //     mongoose.connection.db.dropDatabase();
+        // }
     }
 );
 
@@ -51,38 +53,29 @@ const userLayer = new Schema({
 const userModel = mongoose.model('userModel', userLayer);
 const dataModel = mongoose.model('dataModel', dataLayer);
 
+const queryUser = async (name) => {
+    return await userModel.findOne({ name: name }).then(function (user) {
+        if (user) {
+            const { passwordHash, salt } = user.passwordData;
+            return passwordHash === getHash(user.name, salt) ? user : false;
+        };
+
+        return false;
+    }).catch(function (error) {
+        console.log('one of the queries failed', error);
+    });
+}
+
 const getUser = async (req) => {
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     const token = req.headers.authorization.replace('Bearer ', '');
     const payload = jwt.decode(token);
-
-    const user = await userModel.find({ name: payload.name + ip }).then(function (users) {
-        const tempUser = users.find(function (x) {
-            const { passwordHash, salt } = x.passwordData;
-            return passwordHash === getHash(x.name, salt);
-        });
-
-        return tempUser;
-    }).catch(function (error) {
-        console('one of the queries failed', error);
-    });
-    return user;
+    return queryUser(payload.name + ip);
 }
 
 const getUserFromToken = async (req, token) => {
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-
-    const user = await userModel.find({ name: token + ip }).then(function (users) {
-        const tempUser = users.find(function (x) {
-            const { passwordHash, salt } = x.passwordData;
-            return passwordHash === getHash(x.name, salt);
-        });
-
-        return tempUser;
-    }).catch(function (error) {
-        console('one of the queries failed', error);
-    });
-    return user;
+    return queryUser(token + ip);;
 }
 
 const addUser = async (token) => {
