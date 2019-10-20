@@ -13,6 +13,7 @@ const checkIfAuthenticated = expressJwt({
     secret: RSA_PUBLIC_KEY,
     algorithms: [JWT_ALGORITHM]
 });
+
 const addToken = (req, res, token) => {
     const jwtBearerToken = jwt.sign({
         name: token,
@@ -49,7 +50,7 @@ const extendJWTSession = async (req, res, next) => {
         // New User
         if (!payload && !user) {
             const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-            await addUser(token + ip);
+            await addUser(token + ip.replace(/\./g, ''));
             addToken(req, res, token)
         } else if (!payload && user) {
             addToken(req, res, token)

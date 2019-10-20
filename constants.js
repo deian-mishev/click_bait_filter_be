@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const TOKEN_EXPIRATION = 999999;
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 8080;
 const API_URL = process.env.API_URL || '/api';
 const STATIC_SERVE = process.env.SERVETYPE === 'STATIC';
 const RESOURCES = path.join(__dirname, 'resources/');

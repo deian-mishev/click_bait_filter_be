@@ -1,49 +1,5 @@
-const jwt = require('jsonwebtoken');
-
-const {
-    TOKEN_EXPIRATION,
-    RSA_PRIVATE_KEY,
-    JWT_ALGORITHM
-} = require('../constants');
-
-const { getHash, extractHostname } = require('./handlers');
+const { extractHostname } = require('./handlers');
 const { getUser, getData, addData } = require('./../schema');
-
-const authenticate = (req, res) => {
-    const { username, password } = req.body;
-
-    const user = users.find(x => {
-        if (x.username === username) {
-            const { passwordHash, salt } = x.passwordData;
-            return passwordHash === getHash(password, salt);
-        }
-        return false;
-    });
-
-    if (!user) {
-        res.status(418);
-        res.send({ message: 'Username or password is incorrect' });
-        return;
-    }
-
-    const jwtBearerToken = jwt.sign({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        language: user.language,
-        expiresIn: TOKEN_EXPIRATION,
-        scope: [
-            `role:${user.role}`
-        ]
-    }, RSA_PRIVATE_KEY, {
-        algorithm: JWT_ALGORITHM,
-        keyid: 'M2maFm3VYlMBOn3GetVWGXkrKrk',
-        subject: user.id
-    });
-
-    res.send({
-        token: jwtBearerToken
-    });
-};
 
 const fetchPageSegmentation = async (req, res) => {
     let data = {};
@@ -89,7 +45,6 @@ const registerLink = async (req, res) => {
 
     if (user) {
         let data = await getData(domain);
-
         if (!data) {
             data = await addData(domain, params.link)
         } else {
@@ -117,6 +72,5 @@ const registerLink = async (req, res) => {
 
 module.exports = {
     registerLink,
-    fetchPageSegmentation,
-    authenticate
+    fetchPageSegmentation
 }
