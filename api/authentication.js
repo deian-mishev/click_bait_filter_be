@@ -1,6 +1,7 @@
 const expressJwt = require('express-jwt');
 const jwt = require('jsonwebtoken');
 
+const { getIp } = require('./handlers');
 const { addUser, getUserFromToken } = require('./../schema');
 
 const {
@@ -49,8 +50,7 @@ const extendJWTSession = async (req, res, next) => {
         const user = await getUserFromToken(req, payload ? payload.name : token);
         // New User
         if (!payload && !user) {
-            const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-            await addUser(token + ip.replace(/\./g, ''));
+            await addUser(token + getIp(req));
             addToken(req, res, token)
         } else if (!payload && user) {
             addToken(req, res, token)

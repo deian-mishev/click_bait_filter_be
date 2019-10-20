@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
-const { saltHashPassword, getHash } = require('./api/handlers');
+const { saltHashPassword, getHash, getIp } = require('./api/handlers');
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/clickbait_filter', { useNewUrlParser: true });
 
@@ -61,15 +61,13 @@ const queryUser = async (name) => {
 }
 
 const getUser = async (req) => {
-    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     const token = req.headers.authorization.replace('Bearer ', '');
     const payload = jwt.decode(token);
-    return queryUser(payload.name + ip);
+    return queryUser(payload.name + getIp(req));
 }
 
 const getUserFromToken = async (req, token) => {
-    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    return queryUser(token + ip);;
+    return queryUser(token + getIp(req));
 }
 
 const addUser = async (token) => {

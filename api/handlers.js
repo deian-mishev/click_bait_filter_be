@@ -12,6 +12,11 @@ const extractHostname = url => {
     return hostname;
 };
 
+const getIp = req => {
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    return ip.replace(/\./g, '');
+}
+
 const getHash = (password, salt) => {
     const hash = crypto.createHmac('sha512', salt);
     hash.update(password);
@@ -40,5 +45,6 @@ const saltHashPassword = (userpassword) => {
 module.exports = {
     extractHostname,
     saltHashPassword,
-    getHash
+    getHash,
+    getIp
 }
