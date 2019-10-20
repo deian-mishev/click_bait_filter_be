@@ -3,13 +3,7 @@ const mongoose = require('mongoose');
 
 const { saltHashPassword, getHash } = require('./api/handlers');
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/clickbait_filter', { useNewUrlParser: true },
-    function () {
-        // if (mongoose.connection.db) {
-        //     mongoose.connection.db.dropDatabase();
-        // }
-    }
-);
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/clickbait_filter', { useNewUrlParser: true });
 
 const db = mongoose.connection;
 
