@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 
 const { saltHashPassword, getHash, getIp } = require('./api/handlers');
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/clickbait_filter', { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
 
 const db = mongoose.connection;
 
 db.on('error',
-    console.error.bind(console, 'MongoDB connection error:')
+    console.error.bind(console, 'Connection error:')
 );
 
 const Schema = mongoose.Schema;
