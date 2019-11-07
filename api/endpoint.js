@@ -43,7 +43,12 @@ const registerLink = async (req, res) => {
 
     const user = await getUser(req);
 
-    if (user) {
+    // Maybe add some time based rule
+    // Or just keep == no comebacks
+    if (user && !user.click.find(a =>
+        a.domain === domain &&
+        a.url === params.link
+    )) {
         let data = await getData(domain);
         if (!data) {
             data = await addData(domain, params.link)

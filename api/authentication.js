@@ -1,7 +1,5 @@
 const expressJwt = require('express-jwt');
 const jwt = require('jsonwebtoken');
-
-const { getIp } = require('./handlers');
 const { addUser, getUserFromToken } = require('./../schema');
 
 const {
@@ -50,7 +48,7 @@ const extendJWTSession = async (req, res, next) => {
         const user = await getUserFromToken(req, payload ? payload.name : token);
         // New User
         if (!payload && !user) {
-            await addUser(token + getIp(req));
+            await addUser(req, token);
             addToken(req, res, token)
         } else if (!payload && user) {
             addToken(req, res, token)

@@ -63,17 +63,22 @@ const queryUser = async (name) => {
 const getUser = async (req) => {
     const token = req.headers.authorization.replace('Bearer ', '');
     const payload = jwt.decode(token);
-    return queryUser(payload.name + getIp(req));
+    return queryUser(
+        getHash(payload.name, getIp(req))
+    );
 }
 
 const getUserFromToken = async (req, token) => {
-    return queryUser(token + getIp(req));
+    return queryUser(
+        getHash(token, getIp(req))
+    );
 }
 
-const addUser = async (token) => {
-    const passwordData = saltHashPassword(token);
+const addUser = async (req, token) => {
+    const mix = getHash(token, getIp(req));
+    const passwordData = saltHashPassword(mix);
     const user = new userModel({
-        name: token,
+        name: mix,
         passwordData: passwordData
     });
     await user.save((err, user) => {
