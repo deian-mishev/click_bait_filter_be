@@ -26,8 +26,10 @@ app.use(bodyParser.json());
 
 // IN HERE API ROUTERS ARE FIRST
 
-app.route(`${API_URL}/pageSegmentation`).post(extendJWTSession, jwtAuthz(['role:user', 'role:admin']), fetchPageSegmentation);
-app.route(`${API_URL}/click`).post(checkIfAuthenticated, jwtAuthz(['role:user']), registerLink);
+app.route(`${API_URL}/pageSegmentation`).post(extendJWTSession,
+  jwtAuthz(['role:user', 'role:admin']), fetchPageSegmentation);
+app.route(`${API_URL}/click`).post(checkIfAuthenticated,
+  jwtAuthz(['role:user']), registerLink);
 
 // Extending valid jwt sessions
 app.use(extendJWTSession);
