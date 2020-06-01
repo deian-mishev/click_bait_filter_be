@@ -20,6 +20,7 @@ const tabsSchema = new Schema({
 
 const dataClicksSchema = new Schema({
     url: String,
+    tf_score: Number,
     count: { type: Number, default: 1 }
 });
 
@@ -91,12 +92,13 @@ const getData = async (page) => {
     return data;
 }
 
-const addData = async (page, link) => {
+const addData = async (page, link, ts_model) => {
     const data = new dataModel({
         domain: page,
         links: [
             {
-                url: link
+                url: link,
+                tf_score: ts_model,
             }
         ]
     });

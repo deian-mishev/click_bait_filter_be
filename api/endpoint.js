@@ -1,4 +1,4 @@
-const { extractHostname } = require('./handlers');
+const { extractHostname, getModelScore } = require('./handlers');
 const { getUser, getData, addData } = require('./../schema');
 
 const fetchPageSegmentation = async (req, res) => {
@@ -51,13 +51,17 @@ const registerLink = async (req, res) => {
     )) {
         let data = await getData(domain);
         if (!data) {
-            data = await addData(domain, params.link)
+            data = await addData(
+                domain,
+                params.link,
+                getModelScore(params.link))
         } else {
             const link = data.links.find(a => a.url === params.link);
             if (!link) {
                 data.links.push(
                     {
-                        url: params.link
+                        url: params.link,
+                        tf_score: getModelScore(params.link)
                     }
                 );
             } else {
