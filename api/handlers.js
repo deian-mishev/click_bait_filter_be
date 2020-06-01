@@ -1,14 +1,16 @@
 const fs = require('fs');
 const crypto = require('crypto');
-const tf = require('@tensorflow/tfjs-node');
+const tfn = require("@tensorflow/tfjs-node");
 const tf_data_mapping = require(`${__dirname}/model/mapping.json`);
+
 let tf_model;
 (async () => {
-    tf_model = await tf.loadLayersModel(`file://${__dirname}/model/model.json`);
+    tf_model =
+        await tfn.loadLayersModel(`file://${__dirname}/model/model.json`);
 })()
 
 const getModelScore = url => {
-    let score = 0.0;
+    let score = 0;
     const found = url.
         match(/\/(?=[^/]*$)(.*?)(\.|\?|$)/);
 
@@ -48,7 +50,7 @@ const vectorizeSequence = (sequence, dimension = 3500) => {
         const element = sequence[index];
         results[element] = 1.0
     }
-    return tf.tensor2d([results], [1, dimension]);
+    return tfn.tensor2d([results], [1, dimension]);
 }
 
 

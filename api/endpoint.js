@@ -29,8 +29,18 @@ const fetchPageSegmentation = async (req, res) => {
     if (data.links) {
         let temp = {};
         data.links.forEach(element => {
-            temp[element.url] = element.count;
+            temp[element.url] = element.tf_score;
         });
+        const values = Object.values(temp);
+        const min = Math.min(...values);
+        const max = Math.max(...values);
+        const range = 100 / (max - min);
+
+        const keys = Object.keys(temp)
+        for (const key of keys) {
+            temp[key] = 100 - Math.round(range * temp[key]);
+        }
+
         data = temp;
     }
 
