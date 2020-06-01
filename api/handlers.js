@@ -1,12 +1,12 @@
 const fs = require('fs');
 const crypto = require('crypto');
 const tfn = require("@tensorflow/tfjs-node");
-const tf_data_mapping = require(`${__dirname}/model/mapping.json`);
+const tf_data_mapping = require('../model/mapping.json');
 
 let tf_model;
 (async () => {
     tf_model =
-        await tfn.loadLayersModel(`file://${__dirname}/model/model.json`);
+        await tfn.loadLayersModel(`file://${__dirname}/../model/model.json`);
 })()
 
 const getModelScore = url => {
