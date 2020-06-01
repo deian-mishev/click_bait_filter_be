@@ -1,6 +1,8 @@
 const fs = require('fs');
 const crypto = require('crypto');
 const tfn = require("@tensorflow/tfjs-node");
+const { getUrl } = require('./url_get');
+
 const tf_data_mapping = require('../model/mapping.json');
 
 let tf_model;
@@ -11,35 +13,27 @@ let tf_model;
 
 const getModelScore = url => {
     let score = 0;
-    const found = url.
-        match(/\/(?=[^/]*$)(.*?)(\.|\?|$)/);
-
-    if (found) {
+    const el = getUrl(url);
+    if (el) {
         const combined = [];
-        const el = found[1].split('-')
-            .filter(Boolean)
-            .filter(a => a.match(/^[a-z]+$/))
-
-        if (el.length >= 2) {
-            for (let index = 0; index < el.length; index++) {
-                const element = el[index];
-                const ind_num = tf_data_mapping[element];
-                if (ind_num) {
-                    combined.push(ind_num);
-                } else {
-                    const number = updateModelData(element);
-                    if (number >= 3500) {
-                        console.log('Model needs to be retrained');
-                    }
-                    combined.push(number);
+        for (let index = 0; index < el.length; index++) {
+            const element = el[index];
+            const ind_num = tf_data_mapping[element];
+            if (ind_num) {
+                combined.push(ind_num);
+            } else {
+                const number = updateModelData(element);
+                if (number >= 3500) {
+                    console.log('Model needs to be retrained');
                 }
+                combined.push(number);
             }
-
-            const seq = vectorizeSequence(combined);
-            score = tf_model
-                .predict(seq, { batchSize: 1 })
-                .dataSync()[0];
         }
+
+        const seq = vectorizeSequence(combined);
+        score = tf_model
+            .predict(seq, { batchSize: 1 })
+            .dataSync()[0];
     }
     return score;
 }
