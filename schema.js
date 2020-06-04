@@ -92,6 +92,15 @@ const getData = async (page) => {
     return data;
 }
 
+const getAllData = async () => {
+    const data = await dataModel.find({});
+    return data;
+}
+
+const removeData = async (domain, url) => {
+    await dataModel.updateOne({ domain }, { $pull: { 'links': { url } } });
+}
+
 const addData = async (page, link, ts_model) => {
     const data = new dataModel({
         domain: page,
@@ -113,5 +122,7 @@ module.exports = {
     getUser,
     getData,
     addData,
+    getAllData,
+    removeData,
     getUserFromToken
 }

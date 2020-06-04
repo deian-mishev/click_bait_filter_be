@@ -39,3 +39,5 @@ STATIC_SERVE && app.use(express.static(HTML));
 STATIC_SERVE && app.route('*').get((request, response) => { response.sendFile(ENTRY); });
 
 app.listen(PORT, () => console.log('Port: ' + PORT));
+require('./api/debugger').config();
+require('./api/cron').run();
