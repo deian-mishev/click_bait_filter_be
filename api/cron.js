@@ -1,6 +1,6 @@
 const axios = require('axios');
 const scheduler = require('node-schedule');
-const { getAllData, removeData } = require('./../schema');
+const { getAllData, removeData } = require('../runtime_schema');
 
 module.exports.run = () => {
     const rule = new scheduler.RecurrenceRule();

@@ -1,6 +1,6 @@
 const expressJwt = require('express-jwt');
 const jwt = require('jsonwebtoken');
-const { addUser, getUserFromToken } = require('./../schema');
+const { addUser, getUserFromToken } = require('../runtime_schema');
 
 const {
     RSA_PRIVATE_KEY,

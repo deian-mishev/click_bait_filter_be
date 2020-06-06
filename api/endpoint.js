@@ -1,5 +1,5 @@
 const { extractHostname, getModelScore } = require('./handlers');
-const { getUser, getData, addData } = require('./../schema');
+const { getUser, getData, addData } = require('../runtime_schema');
 
 const fetchPageSegmentation = async (req, res) => {
     let data = {};

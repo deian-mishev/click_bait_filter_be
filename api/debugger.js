@@ -5,7 +5,9 @@ const log_stdout = process.stdout;
 
 module.exports.config = () => {
     console.log = function (d) {
-        log_file.write(util.format(d) + '\n');
-        log_stdout.write(util.format(d) + '\n');
+        if (!d.errno || d.errno !== -2) {
+            log_file.write(util.format(d) + '\n');
+            log_stdout.write(util.format(d) + '\n');
+        }
     };
 }
