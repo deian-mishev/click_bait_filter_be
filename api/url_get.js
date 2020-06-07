@@ -5,7 +5,7 @@ const findSplit = (splits, url) => {
         let el = url.split(split)
             .filter(Boolean)
             .filter(a => a.match(letters))
-        if (el.length >= 2) {
+        if (el.length > 2) {
             return el;
         }
     }

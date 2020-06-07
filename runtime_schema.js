@@ -11,6 +11,15 @@ db.on('error',
     console.error.bind(console, 'Connection error:')
 );
 
+const findOneOrCreate = async function (condition) {
+    const self = this
+    const el = await self.findOne(condition);
+    if (!el) {
+        return await self.create(condition)
+    }
+    return el;
+}
+
 const Schema = mongoose.Schema;
 
 const tabsSchema = new Schema({
@@ -20,7 +29,7 @@ const tabsSchema = new Schema({
 
 const dataClicksSchema = new Schema({
     url: String,
-    tf_score: Number,
+    tf_score: { type: Number, default: 0.0 },
     count: { type: Number, default: 1 }
 });
 
@@ -34,6 +43,8 @@ const dataLayer = new Schema({
     domain: String,
     links: [dataClicksSchema]
 });
+
+dataLayer.statics.findOneOrCreate = findOneOrCreate;
 
 const userLayer = new Schema({
     name: String,
@@ -69,11 +80,9 @@ const getUser = async (req) => {
     );
 }
 
-const getUserFromToken = async (req, token) => {
-    return queryUser(
-        getHash(token, getIp(req))
-    );
-}
+const getUserFromToken = async (req, token) => queryUser(
+    getHash(token, getIp(req))
+);
 
 const addUser = async (req, token) => {
     const mix = getHash(token, getIp(req));
@@ -87,18 +96,18 @@ const addUser = async (req, token) => {
     })
 }
 
-const getData = async (page) => {
-    const data = await dataModel.findOne({ domain: page });
-    return data;
-}
+const getOrCreateData = async (page) => await dataModel.findOneOrCreate({ domain: page });
 
-const getAllData = async () => {
-    const data = await dataModel.find({});
-    return data;
-}
+const getData = async (page) => await dataModel.findOne({ domain: page });
 
-const removeData = async (domain, url) => {
+const getAllData = async () => await dataModel.find({});
+
+const removeUrl = async (domain, url) => {
     await dataModel.updateOne({ domain }, { $pull: { 'links': { url } } });
+}
+
+const removeDomain = async (domain) => {
+    await dataModel.deleteOne({ domain });
 }
 
 const addData = async (page, link, ts_model) => {
@@ -112,7 +121,7 @@ const addData = async (page, link, ts_model) => {
         ]
     });
     return await data.save((err, a) => {
-        if (err) return console.error(err);
+        if (err) return console.log(err);
         return a;
     })
 }
@@ -122,7 +131,9 @@ module.exports = {
     getUser,
     getData,
     addData,
+    getOrCreateData,
     getAllData,
-    removeData,
+    removeUrl,
+    removeDomain,
     getUserFromToken
 }

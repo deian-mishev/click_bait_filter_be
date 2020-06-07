@@ -1,6 +1,7 @@
 const fs = require('fs');
 const crypto = require('crypto');
 const tfn = require("@tensorflow/tfjs-node");
+const { TENSOR_DIMENTIONS } = require('../constants');
 const { getUrl } = require('./url_get');
 
 const tf_data_mapping = require('../model/mapping.json');
@@ -15,22 +16,7 @@ const getModelScore = url => {
     let score = 0;
     const el = getUrl(url);
     if (el) {
-        const combined = [];
-        for (let index = 0; index < el.length; index++) {
-            const element = el[index];
-            const ind_num = tf_data_mapping[element];
-            if (ind_num) {
-                combined.push(ind_num);
-            } else {
-                const number = updateModelData(element);
-                if (number >= 3500) {
-                    console.log('Model needs to be retrained');
-                }
-                combined.push(number);
-            }
-        }
-
-        const seq = vectorizeSequence(combined);
+        const seq = vectorizeSequences([textToTFIndex(el)]);
         score = tf_model
             .predict(seq, { batchSize: 1 })
             .dataSync()[0];
@@ -38,22 +24,73 @@ const getModelScore = url => {
     return score;
 }
 
-const vectorizeSequence = (sequence, dimension = 3500) => {
-    let results = new Array(dimension).fill(0.0);
-    for (let index = 0; index < sequence.length; index++) {
-        const element = sequence[index];
-        results[element] = 1.0
+const textToTFIndex = el => {
+    const combined = [];
+    for (let j = 0; j < el.length; j++) {
+        const element = el[j];
+        const ind_num = tf_data_mapping[element];
+        if (ind_num) {
+            combined.push(ind_num);
+        } else {
+            const number = updateModelData(element);
+            if (number >= TENSOR_DIMENTIONS) {
+                console.log('Model needs to be retrained');
+            } else {
+                combined.push(number);
+            }
+        }
     }
-    return tfn.tensor2d([results], [1, dimension]);
+    return combined;
 }
 
+const getScoredModelLinks = urls => {
+    const activeLinks = [];
+    const seq = [];
+    for (let i = 0; i < urls.length; i++) {
+        const el = getUrl(urls[i]);
+        if (el) {
+            activeLinks.push({
+                url: urls[i],
+                count: 0
+            });
+            seq.push(textToTFIndex(el));
+        }
+    }
+    // Batch Model Processing
+    if (seq.length > 0) {
+        const scores = tf_model
+            .predict(vectorizeSequences(seq))
+            .dataSync();
+        for (let index = 0; index < activeLinks.length; index++) {
+            const element = activeLinks[index];
+            element.tf_score = scores[index];
+        }
+    }
+    return activeLinks;
+}
+
+const vectorizeSequences = (sequences, dimension = TENSOR_DIMENTIONS) => {
+    let results = [];
+    for (let i = 0; i < sequences.length; i++) {
+        const result = new Array(dimension).fill(0.0);
+        const element = sequences[i];
+        for (let j = 0; j < element.length; j++) {
+            const el = element[j];
+            if (el < dimension) {
+                result[element[j]] = 1.0;
+            }
+        }
+        results = results.concat(result);
+    }
+    return tfn.tensor2d(results, [sequences.length, dimension]);
+}
 
 const updateModelData = element => {
     const num = Math.max(...Object.values(tf_data_mapping)) + 1;
     tf_data_mapping[element] = num;
-    fs.writeFile(
-        `${__dirname} / model / mapping.json`,
-        JSON.stringify(tf_data_mapping, null, 4),
+    fs.writeFileSync(
+        `${__dirname}/../model/mapping.json`,
+        JSON.stringify(tf_data_mapping),
         'utf8', function (err) {
             if (err) {
                 return console.log(err);
@@ -105,6 +142,7 @@ const saltHashPassword = (userpassword) => {
 }
 
 module.exports = {
+    getScoredModelLinks,
     getModelScore,
     extractHostname,
     saltHashPassword,

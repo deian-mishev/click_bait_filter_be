@@ -1,6 +1,6 @@
 const axios = require('axios');
 const scheduler = require('node-schedule');
-const { getAllData, removeData } = require('../runtime_schema');
+const { getAllData, removeUrl, removeDomain } = require('../runtime_schema');
 
 module.exports.run = () => {
     const rule = new scheduler.RecurrenceRule();
@@ -22,23 +22,28 @@ module.exports.run = () => {
             " " + hours +
             ":" + minutes +
             ":" + seconds);
-        databaseCleanup();
+        runtimeDatabaseCleanup();
     });
 }
 
-const databaseCleanup = async () => {
+const runtimeDatabaseCleanup = async () => {
     const data = await getAllData();
     for (let i = 0; i < data.length; i++) {
         const site = data[i];
         const domain = site.domain;
-        for (let j = 0; j < site.links.length; j++) {
+        const len = site.links.length;
+        for (let j = 0; j < len; j++) {
             const url = site.links[j].url;
             try {
                 await axios.get(url);
             } catch (error) {
                 console.log('Removing: ' + url);
-                removeData(domain, url)
+                removeUrl(domain, url);
+                len--;
             }
+        }
+        if (len === 0) {
+            removeDomain(domain);
         }
     }
 }
