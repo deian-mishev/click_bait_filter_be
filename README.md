@@ -3,7 +3,7 @@
 [![ClickBaitSite](https://click-bait-filtering-plugin.com/assets/images/icon-128-122x122.png)](https://click-bait-filtering-plugin.com/index.html)
 
 ## Technologies
-----
+---
 
 CLICKBAIT-FILTER-SERVICE uses a number of open source projects:
 
@@ -22,7 +22,7 @@ CLICKBAIT-FILTER-SERVICE uses a number of open source projects:
 </br>
 
 ## Installation
-----
+---
 CLICKBAIT-FILTER-SERVICE requires [Node.js](https://nodejs.org/) v10+ to run.
 
 Install node dependancies for the project:
@@ -58,12 +58,12 @@ These application have the following folder structure:
 ```
 
 ## Running and Building 
------
+---
 This application is an **Express Application**;
 
 
 ### 2. Runing the service
------
+---
 
 * **WITH MICROSOFT VISUAL STUDIO CODE**
 

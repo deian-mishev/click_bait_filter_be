@@ -35,6 +35,15 @@ const dataLayer = new Schema({
     links: [dataClicksSchema]
 });
 
+const findOneOrCreate = async function (condition) {
+    const self = this
+    const el = await self.findOne(condition);
+    if (!el) {
+        return await self.create(condition)
+    }
+    return el;
+}
+
 dataLayer.statics.findOneOrCreate = findOneOrCreate;
 
 const userLayer = new Schema({
@@ -85,15 +94,6 @@ const addUser = async (req, token) => {
     await user.save((err, user) => {
         if (err) return console.error(err);
     })
-}
-
-const findOneOrCreate = async function (condition) {
-    const self = this
-    const el = await self.findOne(condition);
-    if (!el) {
-        return await self.create(condition)
-    }
-    return el;
 }
 
 const getOrCreateData = async (page) => await dataModel.findOneOrCreate({ domain: page });
