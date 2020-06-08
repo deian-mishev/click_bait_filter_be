@@ -41,7 +41,6 @@ This service is a part of a multi application project that features the followin
 
 | Service Name                                  | Description                         | Maintainer              |
 | ----------------------------------------      |:------------------------------------|:------------------------|
-| [webpack-chrome-extension-reloader]           | Chrome Extension Reloader/Builder   | [rubenspgcavalcante]    |
 | [click_bait_filter_extension]                 | Chrome Extensions Plugin            | [LeadShuriken]          |
 | [click_bait_filter_be]                        | Node Application Server             | [LeadShuriken]          |
 | [click_bait_filter_ml]                        | TensorFlow Model Generator/Updater  | [LeadShuriken]          |
