@@ -7,6 +7,9 @@
 This service is a part of a group of services who plot to rid the web of clickbait by relying on user input and machine learnig. The completed application functions by storing it’s user clicked items and using them to disseminate what is clickbait and what is legitimate news, stories, etc. This is done in conjunction with a machine learning classificator. The full application functions on all sites and thus can allow you to be more productive while browsing the web. It functions by providing the user with a slider giving him possibility to filter content, deemed clickbait and at the same time highlight content that is deemed not. In addition it can show it’s user a topology of the most clickbaity content of each domain.
 </br>
 </br>
+This service is essentially a backend that authenticates/identifies the user and stores/rates his clicks. This service also maintains db sanity (scheduler) and maps user visited domains. 
+</br>
+</br>
 For more info visit the application [CLICKBAIT-PORTAL] and download from the [CHROME-STORE].
 
 ## Technologies
