@@ -93,7 +93,7 @@ This application is an **Express Application**;
   Open the terminal and navigate to the root project folder.
 
   ```sh
-  $ export API_URL=/api&& export MONGODB_URI=<MONGO CONNECTION STRING>&& export PORT=4000&& node index.js
+  $ export API_URL=/api && export MONGODB_URI=<MONGO CONNECTION STRING> && export PORT=4000 && node index.js
   ```
 
   This launches the service on: **http://localhost:4000** 
