@@ -47,22 +47,22 @@ This service is a part of a multi application project that features the followin
 | [click_bait_filter_ml]                        | TensorFlow Model Generator/Updater  | [LeadShuriken]          |
 | [click_bait_filter_portal]                    | Service and Information Portal      | [LeadShuriken]          |
 
-These application have the following folder structure:
+For development the application should have the following structure:
 ```sh
  | .
- | +-- webpack-chrome-extension-reloader
- |      +-- click_bait_filter_extension
- |      +-- click_bait_filter_be
- |      +-- click_bait_filter_ml
+ | +-- click_bait_filter_extension
+ | +-- click_bait_filter_be
+ | +-- click_bait_filter_ml
  | +-- click_bait_filter_portal
 ```
+This is as the 'click_bait_filter_ml' uses the 'click_bait_filter_be' api's for filtering links. 'click_bait_filter_portal' is just static html which can preside anywhere. 
+'click_bait_filter_extension' is autonomous as well.
 
 ## Running and Building
 
 This application is an **Express Application**;
 
-
-### 2. Runing the service
+### 1. Runing the service
 ---
 
 * **WITH MICROSOFT VISUAL STUDIO CODE**
@@ -94,7 +94,7 @@ This application is an **Express Application**;
   Open the terminal and navigate to the root project folder.
 
   ```sh
-  $ API_URL=/api MONGODB_URI=<MONGO CONNECTION STRING> PORT=4000 node index.js
+  $ export API_URL=/api&& export MONGODB_URI=<MONGO CONNECTION STRING>&& export PORT=4000&& node index.js
   ```
 
   This launches the service on: **http://localhost:4000** 
