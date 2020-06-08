@@ -18,8 +18,6 @@ CLICKBAIT-FILTER-SERVICE uses a number of open source projects:
   * [COMPRESSION] - HTTP COMPRESSION MIDDLEWARE
   * [NODE-SCHEDULE] - CRON LIKE NOT TASK SCHEDULER
 
-</br>
-
 ## Installation
 
 CLICKBAIT-FILTER-SERVICE requires [Node.js](https://nodejs.org/) v10+ to run.
@@ -29,12 +27,10 @@ Install node dependancies for the project:
 $ cd click_bait_filter_be
 $ npm install
 ```
-</br>
 
 ## Applications Scopes
 
 This service is a part of a multi application project that features the following git repositories:
-
 
 | Service Name                                  | Description                         | Maintainer              |
 | ----------------------------------------      |:------------------------------------|:------------------------|
@@ -43,7 +39,6 @@ This service is a part of a multi application project that features the followin
 | [click_bait_filter_be]                        | Node Application Server             | [LeadShuriken]          |
 | [click_bait_filter_ml]                        | TensorFlow Model Generator/Updater  | [LeadShuriken]          |
 | [click_bait_filter_portal]                    | Service and Information Portal      | [LeadShuriken]          |
-</br>
 
 These application have the following folder structure:
 ```sh
@@ -96,7 +91,6 @@ This application is an **Express Application**;
   ```
 
   This launches the service on: **http://localhost:4000** 
-</br>
 
 ### Todos
 
