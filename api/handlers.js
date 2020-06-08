@@ -1,7 +1,7 @@
 const fs = require('fs');
 const crypto = require('crypto');
 const tfn = require("@tensorflow/tfjs-node");
-const { TENSOR_DIMENTIONS } = require('../constants');
+const { TENSOR_DIMENSIONS } = require('../constants');
 const { getUrl } = require('./url_get');
 
 const tf_data_mapping = require('../model/mapping.json');
@@ -33,7 +33,7 @@ const textToTFIndex = el => {
             combined.push(ind_num);
         } else {
             const number = updateModelData(element);
-            if (number >= TENSOR_DIMENTIONS) {
+            if (number >= TENSOR_DIMENSIONS) {
                 console.log('Model needs to be retrained');
             } else {
                 combined.push(number);
@@ -69,7 +69,7 @@ const getScoredModelLinks = urls => {
     return activeLinks;
 }
 
-const vectorizeSequences = (sequences, dimension = TENSOR_DIMENTIONS) => {
+const vectorizeSequences = (sequences, dimension = TENSOR_DIMENSIONS) => {
     let results = [];
     for (let i = 0; i < sequences.length; i++) {
         const result = new Array(dimension).fill(0.0);

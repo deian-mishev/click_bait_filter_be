@@ -2,5 +2,6 @@ node_modules
 keys/**
 model/**
 debug.log
+db/
  
 !.gitkeep

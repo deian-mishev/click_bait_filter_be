@@ -11,15 +11,6 @@ db.on('error',
     console.error.bind(console, 'Connection error:')
 );
 
-const findOneOrCreate = async function (condition) {
-    const self = this
-    const el = await self.findOne(condition);
-    if (!el) {
-        return await self.create(condition)
-    }
-    return el;
-}
-
 const Schema = mongoose.Schema;
 
 const tabsSchema = new Schema({
@@ -96,19 +87,20 @@ const addUser = async (req, token) => {
     })
 }
 
+const findOneOrCreate = async function (condition) {
+    const self = this
+    const el = await self.findOne(condition);
+    if (!el) {
+        return await self.create(condition)
+    }
+    return el;
+}
+
 const getOrCreateData = async (page) => await dataModel.findOneOrCreate({ domain: page });
 
 const getData = async (page) => await dataModel.findOne({ domain: page });
 
 const getAllData = async () => await dataModel.find({});
-
-const removeUrl = async (domain, url) => {
-    await dataModel.updateOne({ domain }, { $pull: { 'links': { url } } });
-}
-
-const removeDomain = async (domain) => {
-    await dataModel.deleteOne({ domain });
-}
 
 const addData = async (page, link, ts_model) => {
     const data = new dataModel({
@@ -124,6 +116,14 @@ const addData = async (page, link, ts_model) => {
         if (err) return console.log(err);
         return a;
     })
+}
+
+const removeUrl = async (domain, url) => {
+    await dataModel.updateOne({ domain }, { $pull: { 'links': { url } } });
+}
+
+const removeDomain = async (domain) => {
+    await dataModel.deleteOne({ domain });
 }
 
 module.exports = {

@@ -20,7 +20,6 @@ const { checkIfAuthenticated, extendJWTSession } = require('./api/authentication
 const { fetchPageSegmentation, registerLink } = require('./api/endpoint');
 
 const app = express();
-// app.use(cors());
 app.use(compression());
 app.use(bodyParser.json());
 
