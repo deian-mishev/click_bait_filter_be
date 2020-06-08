@@ -3,7 +3,6 @@
 [![ClickBaitSite](https://click-bait-filtering-plugin.com/assets/images/icon-128-122x122.png)](https://click-bait-filtering-plugin.com/index.html)
 
 ## Technologies
----
 
 CLICKBAIT-FILTER-SERVICE uses a number of open source projects:
 
@@ -22,7 +21,7 @@ CLICKBAIT-FILTER-SERVICE uses a number of open source projects:
 </br>
 
 ## Installation
----
+
 CLICKBAIT-FILTER-SERVICE requires [Node.js](https://nodejs.org/) v10+ to run.
 
 Install node dependancies for the project:
@@ -45,7 +44,6 @@ This service is a part of a multi application project that features the followin
 | [click_bait_filter_ml]                        | TensorFlow Model Generator/Updater  | [LeadShuriken]          |
 | [click_bait_filter_portal]                    | Service and Information Portal      | [LeadShuriken]          |
 </br>
-</br>
 
 These application have the following folder structure:
 ```sh
@@ -57,8 +55,8 @@ These application have the following folder structure:
  | +-- click_bait_filter_portal
 ```
 
-## Running and Building 
----
+## Running and Building
+
 This application is an **Express Application**;
 
 
@@ -102,7 +100,7 @@ This application is an **Express Application**;
 
 ### Todos
 
- - Write MORE Tests
+ - Tests and Docs
 
   [NODE.JS]: <https://github.com/nodejs/node>
   [EXPRESS.JS]: <https://github.com/expressjs/express>
