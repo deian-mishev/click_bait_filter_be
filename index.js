@@ -7,10 +7,7 @@ const compression = require('compression');
 // CONSTANTS
 const {
   PORT,
-  API_URL,
-  STATIC_SERVE,
-  HTML,
-  ENTRY
+  API_URL
 } = require('./constants');
 
 // AUTHENTICATION
@@ -24,7 +21,6 @@ app.use(compression());
 app.use(bodyParser.json());
 
 // IN HERE API ROUTERS ARE FIRST
-
 app.route(`${API_URL}/pageSegmentation`).post(extendJWTSession,
   jwtAuthz(['role:user', 'role:admin']), fetchPageSegmentation);
 app.route(`${API_URL}/click`).post(checkIfAuthenticated,
@@ -32,10 +28,6 @@ app.route(`${API_URL}/click`).post(checkIfAuthenticated,
 
 // Extending valid jwt sessions
 app.use(extendJWTSession);
-
-// WE ARE HANDLING ALL ROUTES WHICH DO NOT RESULT IN A REQUEST LAST AND RETURN THE SPA
-STATIC_SERVE && app.use(express.static(HTML));
-STATIC_SERVE && app.route('*').get((request, response) => { response.sendFile(ENTRY); });
 
 app.listen(PORT, () => console.log('Port: ' + PORT));
 require('./api/debugger').config();
