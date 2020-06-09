@@ -6,8 +6,7 @@
   "author": "Deian.Mishev",
   "license": "ISC",
   "scripts": {
-    "mongo": "mongod --dbpath ./db",
-    "deploy_keys": "cat turtles.csv | gpg --armor --symmetric --output - | curl -X PUT --upload-file '-' https://transfer.sh/turtles.csv"
+    "mongo": "mongod --dbpath ./db"
   },
   "dependencies": {
     "@tensorflow/tfjs-node": "^2.0.0",
