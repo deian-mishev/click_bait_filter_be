@@ -20,7 +20,7 @@ const getUrl = url => {
     }
 
     const found = newUrl.
-        match(/\/(?=[^/]*$)(.*?)(\.|\?|$)/);
+        match(/^[http:\/\/|https:\/\/].*\/(?=[^/]*$)(.*?)(\.|\?|$)/);
 
     if (found && found[1]) {
         res = findSplit(['-', '_'], found[1]);

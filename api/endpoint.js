@@ -9,6 +9,7 @@ const {
     addData,
     getOrCreateData
 } = require('../runtime_schema');
+const { getUrl } = require('./url_get');
 
 const fetchPageSegmentation = async (req, res) => {
     let data = {};
@@ -83,7 +84,7 @@ const registerLink = async (req, res) => {
         if (!user.clicks.find(a =>
             a.domain === domain &&
             a.url === params.link
-        )) {
+        ) && getUrl(params.link)) {
             const data = await getData(domain);
             if (!data) {
                 await addData(
