@@ -4,7 +4,7 @@ const tfn = require("@tensorflow/tfjs-node");
 const { TENSOR_DIMENSIONS } = require('../constants');
 const { getUrl } = require('./url_get');
 
-const tf_data_mapping = require('../model/mapping.json');
+let tf_data_mapping = require('../model/mapping.json');
 
 let tf_model;
 (async () => {
@@ -26,35 +26,38 @@ const getModelScore = url => {
 
 const textToTFIndex = el => {
     const combined = [];
+    const toBeUpdated = {};
+    let count = Math.max(...Object.values(tf_data_mapping));
     for (let j = 0; j < el.length; j++) {
         const element = el[j];
         const ind_num = tf_data_mapping[element];
         if (ind_num) {
             combined.push(ind_num);
         } else {
-            const number = updateModelData(element);
-            if (number >= TENSOR_DIMENSIONS) {
+            toBeUpdated[element] = ++count;
+            if (count >= TENSOR_DIMENSIONS) {
                 console.log('Model needs to be retrained');
             } else {
-                combined.push(number);
+                combined.push(count);
             }
         }
+    }
+    if (Object.keys(toBeUpdated).length > 0) {
+        updateModelData(toBeUpdated);
     }
     return combined;
 }
 
-const getScoredModelLinks = urls => {
+const getScoredModelLinks = (urls, links) => {
     const activeLinks = [];
     const seq = [];
     for (let i = 0; i < urls.length; i++) {
-        const el = getUrl(urls[i]);
-        if (el) {
-            activeLinks.push({
-                url: urls[i],
-                count: 0
-            });
-            seq.push(textToTFIndex(el));
-        }
+        const el = links[urls[i]];
+        activeLinks.push({
+            url: urls[i],
+            count: 0
+        });
+        seq.push(textToTFIndex(el));
     }
     // Batch Model Processing
     if (seq.length > 0) {
@@ -85,9 +88,8 @@ const vectorizeSequences = (sequences, dimension = TENSOR_DIMENSIONS) => {
     return tfn.tensor2d(results, [sequences.length, dimension]);
 }
 
-const updateModelData = element => {
-    const num = Math.max(...Object.values(tf_data_mapping)) + 1;
-    tf_data_mapping[element] = num;
+const updateModelData = elements => {
+    tf_data_mapping = { ...tf_data_mapping, ...elements };
     fs.writeFileSync(
         `${__dirname}/../model/mapping.json`,
         JSON.stringify(tf_data_mapping),
@@ -96,7 +98,6 @@ const updateModelData = element => {
                 return console.log(err);
             }
         });
-    return num;
 }
 
 const extractHostname = url => {

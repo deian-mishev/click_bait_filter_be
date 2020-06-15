@@ -42,7 +42,7 @@ const fetchPageSegmentation = async (req, res) => {
 
     // IS REQUEST FROM ON PAGE AND LINKS ARE AVAILABLE
     if (req.body.links) {
-        let tempLinks = req.body.links;
+        let tempLinks = Object.keys(req.body.links);
         if (data.links) {
             // FILTER LINKS THAT ARE NOT REGISTERED
             const dbLinks = data.links.map(a => a.url);
@@ -53,7 +53,7 @@ const fetchPageSegmentation = async (req, res) => {
         // IF ANY REGISTER AND SCORE
         if (tempLinks.length > 0) {
             data.links = data.links.concat(
-                getScoredModelLinks(tempLinks)
+                getScoredModelLinks(tempLinks, req.body.links)
             )
             data.save();
         }

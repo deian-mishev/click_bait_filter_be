@@ -12,18 +12,22 @@ const findSplit = (splits, url) => {
     return false;
 }
 
+const isPresent = (url, val) => url.indexOf(val) !== -1;
+
 const getUrl = url => {
     let res = false;
-    let newUrl = url.replace('/?', '?');
-    if (newUrl[newUrl.length - 1] === '/') {
-        newUrl = newUrl.substring(0, newUrl.length - 1)
-    }
+    if (!isPresent(url, '.php') && !isPresent(url, '.jsp')) {
+        let newUrl = url.replace('/?', '?');
+        if (newUrl[newUrl.length - 1] === '/') {
+            newUrl = newUrl.substring(0, newUrl.length - 1)
+        }
 
-    const found = newUrl.
-        match(/^[http:\/\/|https:\/\/].*\/(?=[^/]*$)(.*?)(\.|\?|$)/);
+        const found = newUrl.
+            match(/^[http:\/\/|https:\/\/].*\/(?=[^/]*$)(.*?)(\.|\?|$)/);
 
-    if (found && found[1]) {
-        res = findSplit(['-', '_'], found[1]);
+        if (found && found[1]) {
+            res = findSplit(['-', '_'], found[1]);
+        }
     }
 
     return res;
