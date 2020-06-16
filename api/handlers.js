@@ -35,14 +35,10 @@ const textToTFIndex = el => {
             combined.push(ind_num);
         } else {
             toBeUpdated[element] = ++count;
-            if (count >= TENSOR_DIMENSIONS) {
-                console.log('Model needs to be retrained');
-            } else {
-                combined.push(count);
-            }
         }
     }
     if (Object.keys(toBeUpdated).length > 0) {
+        console.log('Model needs to be retrained');
         updateModelData(toBeUpdated);
     }
     return combined;
