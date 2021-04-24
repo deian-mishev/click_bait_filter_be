@@ -1,4 +1,4 @@
-# CLICKBAIT-FILTER-SERVICE (TEST_SERVER)
+# CLICKBAIT-FILTER-SERVICE (Prototype)
 
 [![ClickBaitSite](https://click-bait-filtering-plugin.com/assets/images/icon-128-122x122.png)](https://click-bait-filtering-plugin.com/index.html)
 
