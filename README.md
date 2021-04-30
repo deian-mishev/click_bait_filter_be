@@ -42,10 +42,10 @@ This service is a part of a multi application project that features the followin
 | Service Name                                  | Description                         | Maintainer              |
 | ----------------------------------------      |:------------------------------------|:------------------------|
 | [click_bait_filter_extension]                 | Chrome Extensions Plugin            | [LeadShuriken]          |
-| [click_bait_filter_be]\(TEST_SERVER)           | Node Application Test Server        | [LeadShuriken]          |
+| [click_bait_filter_be]\(TEST_SERVER)          | Node Application Test Server        | [LeadShuriken]          |
 | [click_bait_filter_j]                         | Spring Production Server            | [LeadShuriken]          |
 | [click_bait_filter_tflow]                     | Java Tensor Flow Server             | [LeadShuriken]          |
-| [click_bait_filter_ml]                        | TensorFlow Model Generator/Updater  | [LeadShuriken]          |
+| [click_bait_filter_nlp]                       | TensorFlow Model Generator/Updater  | [LeadShuriken]          |
 | [click_bait_filter_portal]                    | Service and Information Portal      | [LeadShuriken]          |
 
 
@@ -56,10 +56,10 @@ For development the application should have the following structure:
  | +-- click_bait_filter_be
  | +-- click_bait_filter_j
  | +-- click_bait_filter_tflow
- | +-- click_bait_filter_ml
+ | +-- click_bait_filter_nlp
  | +-- click_bait_filter_portal
 ```
-This is as the 'click_bait_filter_ml' uses the 'click_bait_filter_be' api's for filtering links. 'click_bait_filter_portal' is just static html which can preside anywhere. 
+This as 'click_bait_filter_nlp' uses the 'click_bait_filter_be' api's for filtering links. 'click_bait_filter_portal' is just static html which can preside anywhere. 
 
 ## Running and Building
 
@@ -122,7 +122,7 @@ This application is an **Express Application**;
   [webpack-chrome-extension-reloader]: <https://github.com/LeadShuriken/webpack-chrome-extension-reloader>
   [click_bait_filter_extension]: <https://github.com/LeadShuriken/click_bait_filter_extension>
   [click_bait_filter_be]: <https://github.com/LeadShuriken/click_bait_filter_be>
-  [click_bait_filter_ml]: <https://github.com/LeadShuriken/click_bait_filter_ml>
+  [click_bait_filter_nlp]: <https://github.com/LeadShuriken/click_bait_filter_nlp>
   [click_bait_filter_portal]: <https://github.com/LeadShuriken/click_bait_filter_portal>
   [click_bait_filter_j]: <https://github.com/LeadShuriken/click_bait_filter_j>
   [click_bait_filter_tflow]: <https://github.com/LeadShuriken/click_bait_filter_tflow>
