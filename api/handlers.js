@@ -74,10 +74,7 @@ const vectorizeSequences = (sequences, dimension = TENSOR_DIMENSIONS) => {
         const result = new Array(dimension).fill(0.0);
         const element = sequences[i];
         for (let j = 0; j < element.length; j++) {
-            const el = element[j];
-            if (el < dimension) {
-                result[element[j]] = 1.0;
-            }
+            result[j] = element[j];
         }
         results = results.concat(result);
     }
