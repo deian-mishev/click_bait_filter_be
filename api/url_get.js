@@ -16,18 +16,15 @@ const isPresent = (url, val) => url.indexOf(val) !== -1;
 
 const getUrl = url => {
     let res = false;
-    if (!isPresent(url, '.php') && !isPresent(url, '.jsp')) {
-        let newUrl = url.replace('/?', '?');
-        if (newUrl[newUrl.length - 1] === '/') {
-            newUrl = newUrl.substring(0, newUrl.length - 1)
+    if (isPresent(url, '.html')) {
+        url = url.split(".html")[0];
+        const found = url.
+            match(/(([^\/|=|?|_|-]+)(?=(\.\w+$)|(\.$)|(\/+$)|-|_))+/g);
+        if (found && found.length && found.length > 3) {
+            res = found;
         }
 
-        const found = newUrl.
-            match(/^[http:\/\/|https:\/\/].*\/(?=[^/]*$)(.*?)(\.|\?|$)/);
-
-        if (found && found[1]) {
-            res = findSplit(['-', '_'], found[1]);
-        }
+        return res;
     }
 
     return res;
